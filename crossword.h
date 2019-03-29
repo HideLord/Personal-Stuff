@@ -7,6 +7,7 @@
 #include <map>
 #include <string>
 #include <string.h>
+#include <cassert>
 
 using namespace std;
 
@@ -21,6 +22,13 @@ public:
 		for (size_t i = 0; i < letters.size(); i++)
 			res[i] = *letters[i].first;
 		return res;
+	}
+	string operator=(string S) {
+		assert(S.size() == letters.size());
+		for (size_t i = 0; i < letters.size(); i++) {
+			*letters[i].first = S[i];
+		}
+		return S;
 	}
 	static bool sortHelp(const position & A, const position & B) {
 		return A.letters[0].second < B.letters[0].second;
@@ -43,6 +51,7 @@ public:
 		return board[i][j] == boxChar || board[i][j] == sboxChar;
 	}
 	void load(string path);
+	void save(string path = "");
 	crossword();
 	~crossword();
 

@@ -64,6 +64,24 @@ void crossword::load(string path){
 	loadWords();
 }
 
+void crossword::save(string path){
+	if (path.empty()) {
+		path = name + ".ctb";
+	}
+	ofstream fout(path,ios::binary);
+
+	fout << N;
+	fout << M;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if(uc(board[i][j])>=cyrillicA)fout << uc(board[i][j] - 64);
+			else fout << board[i][j];
+		}
+	}
+	name = path;
+	cout << "Saved successfully at " << name << "." << endl;
+}
+
 crossword::crossword()
 {
 }
