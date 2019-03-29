@@ -18,6 +18,7 @@ class dictionary
 	using uc = unsigned char;
 public:
 	unordered_map<string, string> explanationDict;
+	unordered_map<string, string> dirtyDict;
 	vector<string> allWords;
 	void loadDict();
 	dictionary();

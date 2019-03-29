@@ -18,13 +18,14 @@ void dictionary::loadDict() {
 			uc c = w[i];
 			if (c >= cyrillicA - 96 && c < cyrillicA - 64)c += 32;
 			if (c >= cyrillicA - 64 && c < cyrillicA - 32)c += 64, clean.push_back(c);
-			w[i] = c;
+			if (uc(w[i]) >= cyrillicA - 96 && uc(w[i]) < cyrillicA - 32)w[i] += 64;
 		}
 		for (size_t i = 0; i < expl.size(); i++) {
 			uc c = expl[i];
 			if (c >= cyrillicA - 96 && c < cyrillicA - 32)c += 64;
 			expl[i] = c;
 		}
+		dirtyDict[clean] = w;
 		explanationDict[clean] = expl;
 		allWords.push_back(clean);
 	}
