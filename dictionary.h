@@ -17,6 +17,8 @@ class dictionary
 	const unsigned char sboxChar = 208;
 	using uc = unsigned char;
 public:
+	static int levenstein(string a, string b);
+public:
 	unordered_map<string, string> explanationDict;
 	unordered_map<string, string> dirtyDict;
 	vector<string> allWords;
