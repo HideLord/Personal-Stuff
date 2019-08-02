@@ -50,13 +50,14 @@ public:
 	bool isBox(int i, int j) {
 		return board[i][j] == boxChar || board[i][j] == sboxChar;
 	}
+	void printASCII();
 	void load(string path);
 	void save(string path = "");
 	crossword();
 	~crossword();
 
 	string name;
-	char N, M;
+	char N = 0, M = 0;
 
 	vector<vector<uc>> board;
 	vector<position> areas;

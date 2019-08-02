@@ -28,6 +28,22 @@ void crossword::loadWords(){
 	sort(areas.begin(), areas.end(), position::sortHelp);
 }
 
+void crossword::printASCII(){
+	if (name.empty())return;
+	if (N == 0 || M == 0)return;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (isBox(i, j)) {
+				cout << (j != 0 ? " " : "") << "|";
+			}
+			else {
+				cout << (j != 0 ? " " : "") << board[i][j];
+			}
+		}
+		cout << endl;
+	}
+}
+
 void crossword::load(string path){
 	while (path.size() < 5) {
 		cout << "Invalid path. Try again:" << endl;
