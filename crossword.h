@@ -61,5 +61,14 @@ public:
 
 	vector<vector<uc>> board;
 	vector<position> areas;
+
+	crossword& operator=(const crossword& cpy) {
+		this->name = cpy.name;
+		this->N = cpy.N;
+		this->M = cpy.M;
+		this->board = cpy.board;
+		this->areas = cpy.areas;
+		return *this;
+	}
 };
 
