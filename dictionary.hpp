@@ -23,6 +23,7 @@ namespace utils
 		const static uint8_t ANY_CHAR = 0; // Used in patterns to indicate that any character can be placed there
 		const static uint8_t LONGEST_WORD = 50;
 		const static char* DEFAULT_DICTIONARY_PATH;
+		const static char* DEFAULT_CONFIG_PATH;
 	
 	public:
 
@@ -76,8 +77,8 @@ namespace utils
 
 	public:
 
-		inline const std::string& getDirty(const std::string& clean) { return _dirtyDict[clean]; }
-		inline const std::string& getExplanation(const std::string& clean) { return _explanationDict[clean]; }
+		const std::string& getDirty(const std::string& clean) const;
+		const std::string& getExplanation(const std::string& clean) const;
 		Pattern findPossible(const std::string& pattern);
 		void shuffle();
 

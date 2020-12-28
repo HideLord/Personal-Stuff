@@ -1,61 +1,100 @@
 #include "crossword.hpp"
 
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <map>
+#include <set>
+
 Crossword::Crossword()
 {
+}
+
+Crossword::Crossword(std::string path)
+{
+	load(std::move(path));
 }
 
 Crossword::~Crossword()
 {
 }
 
+Crossword& Crossword::operator=(const Crossword& cpy)
+{
+	_name = cpy._name;
+	_numRows = cpy._numRows;
+	_numCols = cpy._numCols;
+	_board = cpy._board;
+	loadWords();
+	return *this;
+}
+
 void Crossword::loadWords()
 {
-	crosswordWords.clear();
-	for (int i = 0; i < numRows; ++i)
+	_crosswordWords.clear();
+	for (int i = 0; i < _numRows; ++i)
 	{
-		for (int j = 0; j < numCols; ++j)
+		for (int j = 0; j < _numCols; ++j)
 		{
 			int start = j;
-			for (; j < numCols && !isBox(i, j); ++j)
-				;
+			while (j < _numCols && !isBox(i, j))
+			{
+				++j;
+			}
 			if (j - start <= 1)
+			{
 				continue;
-			CrosswordWord newPos;
-			newPos.isHor = 1;
+			}
+			CrosswordWord word;
+			word.isHor = 1;
 			for (; start < j; ++start)
-				newPos.letters.push_back({&board[i][start], i * numCols + start});
-			crosswordWords.push_back(newPos);
+			{
+				word.letters.push_back(&_board[i][start]);
+				word.letterIndices.push_back(i * _numCols + start);
+			}
+			_crosswordWords.emplace_back(std::move(word));
 		}
 	}
 
-	for (int j = 0; j < numCols; ++j)
+	for (int j = 0; j < _numCols; ++j)
 	{
-		for (int i = 0; i < numRows; ++i)
+		for (int i = 0; i < _numRows; ++i)
 		{
 			int start = i;
-			for (; i < numRows && !isBox(i, j); ++i)
-				;
+			while (i < _numRows && !isBox(i, j))
+			{
+				++i;
+			}
 			if (i - start <= 1)
+			{
 				continue;
-			CrosswordWord newPos;
-			newPos.isHor = 0;
+			}
+			CrosswordWord word;
+			word.isHor = 0;
 			for (; start < i; ++start)
-				newPos.letters.push_back({&board[start][j], start * numCols + j});
-			crosswordWords.push_back(newPos);
+			{
+				word.letters.push_back(&_board[start][j]); 
+				word.letterIndices.push_back(start * _numCols + j);
+			}
+			_crosswordWords.emplace_back(std::move(word));
 		}
 	}
-	sort(crosswordWords.begin(), crosswordWords.end(), CrosswordWord::sortHelp);
+	std::sort(_crosswordWords.begin(), _crosswordWords.end(), CrosswordWord::sortHelpIndices);
 }
 
 void Crossword::printASCII()
 {
-	if (name.empty())
-		return;
-	if (numRows == 0 || numCols == 0)
-		return;
-	for (int i = 0; i < numRows; i++)
+	if (_name.empty())
 	{
-		for (int j = 0; j < numCols; j++)
+		return;
+	}
+	if (_numRows == 0 || _numCols == 0)
+	{
+		return;
+	}
+	for (int i = 0; i < _numRows; i++)
+	{
+		for (int j = 0; j < _numCols; j++)
 		{
 			if (isBox(i, j))
 			{
@@ -63,7 +102,7 @@ void Crossword::printASCII()
 			}
 			else
 			{
-				std::cout << (j != 0 ? " " : "") << board[i][j];
+				std::cout << (j != 0 ? " " : "") << _board[i][j];
 			}
 		}
 		std::cout << std::endl;
@@ -79,19 +118,25 @@ void Crossword::load(std::string path)
 		std::cin >> path;
 	}
 	for (size_t i = 0; i < path.size(); i++)
+	{
 		path[i] = tolower(path[i]);
+	}
 	if (path.substr(path.size() - 4, 4) != ".ctb")
+	{
 		path += ".ctb";
+	}
 	std::ifstream fin(path, std::ios::binary);
 	while (!fin.good())
 	{
 		std::cout << "[ERROR]: Invalid path " << path << ". Try again:" << std::endl;
 		std::cin >> path;
 		if (path.substr(path.size() - 4, 4) != ".ctb")
+		{
 			path += ".ctb";
+		}
 		fin.open(path, std::ios::binary);
 	}
-	name = path.substr(0, path.size() - 4);
+	_name = path.substr(0, path.size() - 4);
 
 	readCrosswordFile(fin);
 	loadWords();
@@ -100,18 +145,20 @@ void Crossword::load(std::string path)
 
 void Crossword::readCrosswordFile(std::istream& in)
 {
-	in.get(numRows);
-	in.get(numCols);
+	in.get(_numRows);
+	in.get(_numCols);
 
-	board = std::vector<std::vector<uc>>(numRows, std::vector<uc>(numCols));
+	_board = std::vector<std::vector<uc>>(_numRows, std::vector<uc>(_numCols));
 	
-	for (int i = 0; i < numRows; i++)
+	for (int i = 0; i < _numRows; i++)
 	{
-		for (int j = 0; j < numCols; j++)
+		for (int j = 0; j < _numCols; j++)
 		{
-			board[i][j] = uc(in.get());
-			if (uc(board[i][j] + 64) >= CYRILLIC_A)
-				board[i][j] += 64;
+			_board[i][j] = uc(in.get());
+			if (uc(_board[i][j] + 64) >= CYRILLIC_A)
+			{
+				_board[i][j] += 64;
+			}
 		}
 	}
 }
@@ -119,37 +166,82 @@ void Crossword::readCrosswordFile(std::istream& in)
 void Crossword::save(std::string path)
 {
 	if (path.empty())
-	{
-		path = name + ".ctb";
-	}
+		path = _name + ".ctb";
+	
 	std::ofstream fout(path, std::ios::binary);
 
-	fout << numRows << numCols;
-	for (int i = 0; i < numRows; i++)
+	fout << _numRows << _numCols;
+	for (int i = 0; i < _numRows; i++)
 	{
-		for (int j = 0; j < numCols; j++)
+		for (int j = 0; j < _numCols; j++)
 		{
-			if (uc(board[i][j]) >= CYRILLIC_A)
-				fout << uc(board[i][j] - 64);
-			else
-				fout << board[i][j];
+			if (uc(_board[i][j]) >= CYRILLIC_A)
+			{
+				fout << uc(_board[i][j] - 64);
+			}
+			else 
+			{
+				fout << _board[i][j];
+			}
 		}
 	}
-	name = path;
-	std::cout << "Saved successfully at " << name << "." << std::endl;
+	_name = path;
+	std::cout << "[INFO]: Saved successfully at " << _name << "." << std::endl;
 }
 
-const std::vector<CrosswordWord> Crossword::compare(const Crossword& crosswordA, const Crossword& crosswordB)
+Crossword::CrosswordReport Crossword::generateReport() const
 {
-	std::map<std::string, CrosswordWord> wordsFromCrosswordA;
-	for(const auto& word : crosswordA.crosswordWords)
+	CrosswordReport report;
+
+	std::vector<std::string> strWords;
+	std::set<std::string> uniqueWords;
+	double lengthSum = 0.0;
+	for (const auto& word : _crosswordWords)
 	{
-		wordsFromCrosswordA.emplace(word.toString(), word);
+		strWords.emplace_back(word.toString());
+		lengthSum += strWords.back().size();
+	
+		if (!uniqueWords.insert(strWords.back()).second)
+		{
+			report.repeatingWords.push_back(&word);
+		}
 	}
 
-	std::vector<CrosswordWord> res;
+	report.crosswordName = _name;
+	report.numWords = _crosswordWords.size();
+	report.averageWordLength = lengthSum / report.numWords;
+	report.cols = _numCols;
+	report.rows = _numRows;
+	report.numBoxes = 0;
+	for (uint32_t i = 0; i < _numRows; ++i)
+	{
+		for (uint32_t j = 0; j < _numCols; ++j)
+		{
+			report.numBoxes += isBox(i, j);
+		}
+	}
+	report.boxedAreaCoef = double(report.numBoxes) / double(report.cols * report.rows);
+	
+	return report;
+}
 
-	for(const auto& word : crosswordB.crosswordWords)
+bool Crossword::isValid(const Crossword& crossword)
+{
+	auto report = crossword.generateReport();
+	return report.repeatingWords.empty();
+}
+
+const std::vector<const CrosswordWord*> Crossword::compare(const Crossword& crosswordA, const Crossword& crosswordB)
+{
+	std::map<std::string, const CrosswordWord*> wordsFromCrosswordA;
+	for(const auto& word : crosswordA._crosswordWords)
+	{
+		wordsFromCrosswordA.emplace(word.toString(), &word);
+	}
+
+	std::vector<const CrosswordWord*> res;
+
+	for(const auto& word : crosswordB._crosswordWords)
 	{
 		auto it = wordsFromCrosswordA.find(word.toString());
 		if(it != wordsFromCrosswordA.end())

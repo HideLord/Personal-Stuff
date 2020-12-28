@@ -4,17 +4,18 @@
 namespace utils
 {
 
-const char* Dictionary::DEFAULT_DICTIONARY_PATH = "Z:/Cross/BIGDICT.txt";
+const char* Dictionary::DEFAULT_DICTIONARY_PATH = "z:/cross/bigdict.txt";
+const char* Dictionary::DEFAULT_CONFIG_PATH = "z:/cross/config/config.ini";
 
 Dictionary::Dictionary()
 {
 	try
 	{
-		boost::property_tree::ini_parser::read_ini("config/config.ini", _iniPropertyTree);
+		boost::property_tree::ini_parser::read_ini(DEFAULT_CONFIG_PATH, _iniPropertyTree);
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "[ERROR]: Dictionary::Dictionary: Could not open config/config.ini. " << e.what() << std::endl;
+		std::cout << "[ERROR]: Dictionary::Dictionary: Could not open default config path: " << DEFAULT_CONFIG_PATH << ". " << e.what() << std::endl;
 		throw;
 	}
 
@@ -42,7 +43,13 @@ Dictionary::Dictionary(const std::string& configFilePath)
 	catch (const std::exception& e)
 	{
 		std::cout << "[ERROR]: Dictionary::Dictionary: Could not open " << configFilePath << ". " << e.what() << std::endl;
-		throw;
+		std::cout << "[INFO]: Dictionary::Dictionary: Defaulting to " << DEFAULT_CONFIG_PATH << std::endl;
+		if (std::ifstream{ DEFAULT_CONFIG_PATH })
+		{
+			std::cout << "[ERROR]: Dictionary::Dictionary: Could not open default path: " << DEFAULT_CONFIG_PATH << "." << std::endl;
+			throw std::runtime_error("Could not open the given configuration path nor the default configuration path");
+		}
+		boost::property_tree::ini_parser::read_ini(configFilePath, _iniPropertyTree);
 	}
 
 	try
@@ -180,6 +187,25 @@ void Dictionary::addToFastSearch(const std::string& newWord, uint16_t index)
 		uint64_t key = getKey(mask, newWord);
 		currentFastSearch[key].push_back(index);
 	}
+}
+
+const std::string& Dictionary::getDirty(const std::string& clean) const 
+{ 
+	auto it = _dirtyDict.find(clean);
+	if (it != _dirtyDict.end())
+	{
+		return it->second;
+	}
+	return "";
+}
+const std::string& Dictionary::getExplanation(const std::string& clean) const 
+{ 
+	auto it = _explanationDict.find(clean);
+	if (it != _explanationDict.end())
+	{
+		return it->second;
+	}
+	return "";
 }
 
 void Dictionary::shuffle()
