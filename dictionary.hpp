@@ -68,8 +68,9 @@ namespace utils
 
 		static std::string cleanString(const std::string& dirtyString);
 		static std::string toupper(std::string word);
-		static char toupper(char c);
-		static bool isalpha(char c);
+		static std::string tolower(std::string word);
+		static uint8_t toupper(uint8_t c);
+		static uint8_t tolower(uint8_t c);
 
 	public:
 

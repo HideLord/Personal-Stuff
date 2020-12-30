@@ -102,14 +102,21 @@ std::string Dictionary::toupper(std::string capsWord)
 
 	return capsWord;
 }
-char Dictionary::toupper(char c)
+uint8_t Dictionary::toupper(uint8_t c)
 {
-	return uint8_t(c) >= CYRILLIC_A ? c-32 : c;
+	return c >= CYRILLIC_A ? c-32 : c;
 }
 
-bool Dictionary::isalpha(char c)
+std::string Dictionary::tolower(std::string capsWord)
 {
-	return uint8_t(c) >= CYRILLIC_A - 32;
+	for (uint32_t i = 0; i < capsWord.size(); ++i)
+		capsWord[i] = tolower(capsWord[i]);
+
+	return capsWord;
+}
+uint8_t Dictionary::tolower(uint8_t c)
+{
+	return c >= CYRILLIC_A-32 && c < CYRILLIC_A? c + 32 : c;
 }
 
 std::string Dictionary::cleanString(const std::string& dirtyString)
@@ -117,7 +124,7 @@ std::string Dictionary::cleanString(const std::string& dirtyString)
 	std::string clean; // Contains the clean word (only alphabetic symbols)
 
 	for (uint32_t i = 0; i < dirtyString.size(); ++i)
-		if (isalpha( dirtyString[i] ))
+		if (isCyrillicChar( dirtyString[i] ))
 			clean.push_back(dirtyString[i]);
 
 	return clean;

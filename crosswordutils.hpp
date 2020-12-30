@@ -16,7 +16,7 @@ namespace utils
 	inline bool isDosBox(uint8_t c) { return c == DOS_BOX_CHAR || c == DOS_SPECIAL_BOX_CHAR; }
 
 	inline bool isCyrillicChar(uint8_t c) { return c >= CYRILLIC_A - 32 && c < CYRILLIC_A + 32; }
-	inline bool isDosCyrillicChar(uint8_t c) { return c >= CYRILLIC_A - 96 && c < CYRILLIC_A - 64; }
+	inline bool isDosCyrillicChar(uint8_t c) { return c >= CYRILLIC_A - 96 && c < CYRILLIC_A - 32; }
 
 	/* Converts the dos code page to win 1251 cyrillic code page */
 	inline std::string dosToWinCode(std::string winWord)
