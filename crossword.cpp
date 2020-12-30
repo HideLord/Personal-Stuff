@@ -1,4 +1,5 @@
 #include "crossword.hpp"
+#include "dictionary.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -154,11 +155,7 @@ void Crossword::readCrosswordFile(std::istream& in)
 	{
 		for (int j = 0; j < _numCols; j++)
 		{
-			_board[i][j] = uc(in.get());
-			if (uc(_board[i][j] + 64) >= CYRILLIC_A)
-			{
-				_board[i][j] += 64;
-			}
+			_board[i][j] = utils::dosToWinCode(in.get());
 		}
 	}
 }
@@ -175,14 +172,7 @@ void Crossword::save(std::string path)
 	{
 		for (int j = 0; j < _numCols; j++)
 		{
-			if (uc(_board[i][j]) >= CYRILLIC_A)
-			{
-				fout << uc(_board[i][j] - 64);
-			}
-			else 
-			{
-				fout << _board[i][j];
-			}
+			fout << utils::winToDosCode(_board[i][j]);
 		}
 	}
 	_name = path;

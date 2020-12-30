@@ -3,6 +3,8 @@
 #include <string>
 #include <cassert>
 
+#include "crosswordutils.hpp"
+
 using uc = unsigned char;
 
 class CrosswordWord
@@ -76,18 +78,12 @@ private:
 
 private:
 
-	static const unsigned char CYRILLIC_A = 224;
-	static const unsigned char BOX_CHAR = 209;
-	static const unsigned char SBOX_CHAR = 208;
-
-private:
-
 	void loadWords();
 	void readCrosswordFile(std::istream& inStream);
 
 public:
 
-	bool isBox(int i, int j) const { return _board[i][j] == BOX_CHAR || _board[i][j] == SBOX_CHAR; }
+	bool isBox(int i, int j) const { return utils::isBox(_board[i][j]); }
 
 	void printASCII();
 	void load(std::string path);
@@ -107,6 +103,4 @@ public:
 
 	static bool isValid(const Crossword& crossword);
 	static const std::vector<const CrosswordWord*> compare(const Crossword& crosswordA, const Crossword& crosswordB);
-
-	static bool isBox(uc c) { return c == BOX_CHAR || c == SBOX_CHAR; }
 };

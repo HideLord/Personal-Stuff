@@ -8,6 +8,7 @@
 #include <boost/property_tree/ini_parser.hpp>
 
 #include "robin_hood.h"
+#include "crosswordutils.hpp"
 
 namespace utils
 {
@@ -15,10 +16,6 @@ namespace utils
 	class Dictionary
 	{
 	public:
-
-		const static uint8_t CYRILLIC_A = 224; // The first letter of the cyrillic alphabet
-		const static uint8_t BOX_CHAR = 209; // Used to place explanations in it
-		const static uint8_t SPECIAL_BOX_CHAR = 208; // Used to place images over it
 
 		const static uint8_t ANY_CHAR = 0; // Used in patterns to indicate that any character can be placed there
 		const static uint8_t LONGEST_WORD = 50;
@@ -73,10 +70,10 @@ namespace utils
 		static std::string toupper(std::string word);
 		static char toupper(char c);
 		static bool isalpha(char c);
-		static std::string dosToWinCode(std::string word);
 
 	public:
 
+		const std::vector<std::string>& getAllWords() const { return _allWords; }
 		const std::string& getDirty(const std::string& clean) const;
 		const std::string& getExplanation(const std::string& clean) const;
 		Pattern findPossible(const std::string& pattern);

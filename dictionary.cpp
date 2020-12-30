@@ -112,16 +112,6 @@ bool Dictionary::isalpha(char c)
 	return uint8_t(c) >= CYRILLIC_A - 32;
 }
 
-/* Converts the dos code page to win 1251 cyrillic code page */
-std::string Dictionary::dosToWinCode(std::string winWord)
-{
-	for (uint32_t i = 0; i < winWord.size(); ++i)
-		if (uint8_t(winWord[i]) >= CYRILLIC_A - 96 && uint8_t(winWord[i]) < CYRILLIC_A - 32)
-			winWord[i] += 64;
-
-	return winWord;
-}
-
 std::string Dictionary::cleanString(const std::string& dirtyString)
 {
 	std::string clean; // Contains the clean word (only alphabetic symbols)
