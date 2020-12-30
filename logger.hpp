@@ -41,6 +41,7 @@ private:
 
 };
 
+#define VLOG_CUSTOM(color, message) ColorChanger::getInstance().changeColor(color);  std::cout << message;
 #define VLOG_TRACE(message) ColorChanger::getInstance().changeColor(7);  std::cout << message;
 #define VLOG_DEBUG(message) ColorChanger::getInstance().changeColor(9);  std::cout << message;
 #define VLOG_INFO(message)  ColorChanger::getInstance().changeColor(10); std::cout << message;

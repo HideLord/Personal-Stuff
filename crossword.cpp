@@ -100,11 +100,11 @@ void Crossword::printASCII()
 		{
 			if (isBox(i, j))
 			{
-				VLOG_TRACE((j != 0 ? " " : "") << "|");
+				VLOG_CUSTOM(0, "  ");
 			}
 			else
 			{
-				VLOG_TRACE((j != 0 ? " " : "") << _board[i][j]);
+				VLOG_CUSTOM(240," " << _board[i][j]);
 			}
 		}
 		VLOG_TRACE(std::endl);
