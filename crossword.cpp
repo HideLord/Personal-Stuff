@@ -1,5 +1,6 @@
 #include "crossword.hpp"
 #include "dictionary.hpp"
+#include "logger.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -99,23 +100,23 @@ void Crossword::printASCII()
 		{
 			if (isBox(i, j))
 			{
-				std::cout << (j != 0 ? " " : "") << "|";
+				VLOG_TRACE((j != 0 ? " " : "") << "|");
 			}
 			else
 			{
-				std::cout << (j != 0 ? " " : "") << _board[i][j];
+				VLOG_TRACE((j != 0 ? " " : "") << _board[i][j]);
 			}
 		}
-		std::cout << std::endl;
+		VLOG_TRACE(std::endl);
 	}
 }
 
 void Crossword::load(std::string path)
 {
-	std::cout << "[INFO]: Crossword::load: loading " << path << "..." << std::endl;
+	VLOG_INFO("[INFO]: Crossword::load: loading " << path << "..." << std::endl);
 	while (path.size() < 5)
 	{
-		std::cout << "[ERROR]: Invalid path. Try again:" << std::endl;
+		VLOG_ERROR("[ERROR]: Invalid path. Try again:" << std::endl);
 		std::cin >> path;
 	}
 	for (size_t i = 0; i < path.size(); i++)
@@ -129,7 +130,7 @@ void Crossword::load(std::string path)
 	std::ifstream fin(path, std::ios::binary);
 	while (!fin.good())
 	{
-		std::cout << "[ERROR]: Invalid path " << path << ". Try again:" << std::endl;
+		VLOG_ERROR("[ERROR]: Invalid path " << path << ". Try again:" << std::endl);
 		std::cin >> path;
 		if (path.substr(path.size() - 4, 4) != ".ctb")
 		{
@@ -176,7 +177,7 @@ void Crossword::save(std::string path)
 		}
 	}
 	_name = path;
-	std::cout << "[INFO]: Saved successfully at " << _name << "." << std::endl;
+	VLOG_INFO("[INFO]: Saved successfully at " << _name << "." << std::endl);
 }
 
 Crossword::CrosswordReport Crossword::generateReport() const

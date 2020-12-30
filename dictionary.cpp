@@ -1,4 +1,5 @@
 #include "dictionary.hpp"
+#include "logger.hpp"
 #include <bitset>
 
 namespace utils
@@ -15,7 +16,7 @@ Dictionary::Dictionary()
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "[ERROR]: Dictionary::Dictionary: Could not open default config path: " << DEFAULT_CONFIG_PATH << ". " << e.what() << std::endl;
+		VLOG_ERROR("[ERROR]: Dictionary::Dictionary: Could not open default config path: " << DEFAULT_CONFIG_PATH << ". " << e.what() << std::endl);
 		throw;
 	}
 
@@ -25,8 +26,8 @@ Dictionary::Dictionary()
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "[ERROR]: Dictionary::Dictionary: Could not find dictionary.dictionary_file_path in config/config.ini. " << e.what() << std::endl;
-		std::cout << "[INFO]: Dictionary::Dictionary: Defaulting to " << DEFAULT_DICTIONARY_PATH << std::endl;
+		VLOG_ERROR("[ERROR]: Dictionary::Dictionary: Could not find dictionary.dictionary_file_path in config/config.ini. " << e.what() << std::endl);
+		VLOG_INFO("[INFO]: Dictionary::Dictionary: Defaulting to " << DEFAULT_DICTIONARY_PATH << std::endl);
 		_dictionaryFilePath = DEFAULT_DICTIONARY_PATH;
 	}
 
@@ -42,11 +43,11 @@ Dictionary::Dictionary(const std::string& configFilePath)
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "[ERROR]: Dictionary::Dictionary: Could not open " << configFilePath << ". " << e.what() << std::endl;
-		std::cout << "[INFO]: Dictionary::Dictionary: Defaulting to " << DEFAULT_CONFIG_PATH << std::endl;
+		VLOG_ERROR("[ERROR]: Dictionary::Dictionary: Could not open " << configFilePath << ". " << e.what() << std::endl);
+		VLOG_INFO("[INFO]: Dictionary::Dictionary: Defaulting to " << DEFAULT_CONFIG_PATH << std::endl);
 		if (std::ifstream{ DEFAULT_CONFIG_PATH })
 		{
-			std::cout << "[ERROR]: Dictionary::Dictionary: Could not open default path: " << DEFAULT_CONFIG_PATH << "." << std::endl;
+			VLOG_ERROR("[ERROR]: Dictionary::Dictionary: Could not open default path: " << DEFAULT_CONFIG_PATH << "." << std::endl);
 			throw std::runtime_error("Could not open the given configuration path nor the default configuration path");
 		}
 		boost::property_tree::ini_parser::read_ini(configFilePath, _iniPropertyTree);
@@ -58,8 +59,8 @@ Dictionary::Dictionary(const std::string& configFilePath)
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "[ERROR]: Dictionary::Dictionary: Could not find dictionary.dictionary_file_path in " << configFilePath << ". " << e.what() << std::endl;
-		std::cout << "[INFO]: Dictionary::Dictionary: Defaulting to " << DEFAULT_DICTIONARY_PATH << std::endl;
+		VLOG_ERROR("[ERROR]: Dictionary::Dictionary: Could not find dictionary.dictionary_file_path in " << configFilePath << ". " << e.what() << std::endl);
+		VLOG_INFO("[INFO]: Dictionary::Dictionary: Defaulting to " << DEFAULT_DICTIONARY_PATH << std::endl);
 		_dictionaryFilePath = DEFAULT_DICTIONARY_PATH;
 	}
 
@@ -149,7 +150,7 @@ void Dictionary::loadDictionary()
 
 	if (!fin.good())
 	{
-		std::cout << "[ERROR]: Dictionary::loadDictionary: Could not open file: " << _dictionaryFilePath << std::endl;
+		VLOG_ERROR("[ERROR]: Dictionary::loadDictionary: Could not open file: " << _dictionaryFilePath << std::endl);
 		return;
 	}
 
@@ -172,7 +173,7 @@ void Dictionary::loadDictionary()
 		_allWords.push_back(clean);
 	}
 
-	std::cout << "[INFO]: Dictionary::loadDictionary: Loaded " << _allWords.size() << " words from dictionary" << std::endl;
+	VLOG_INFO("[INFO]: Dictionary::loadDictionary: Loaded " << _allWords.size() << " words from dictionary" << std::endl);
 }
 
 void Dictionary::addToFastSearch(const std::string& newWord, uint16_t index)
