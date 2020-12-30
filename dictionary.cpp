@@ -45,12 +45,12 @@ Dictionary::Dictionary(const std::string& configFilePath)
 	{
 		VLOG_ERROR("[ERROR]: Dictionary::Dictionary: Could not open " << configFilePath << ". " << e.what() << std::endl);
 		VLOG_INFO("[INFO]: Dictionary::Dictionary: Defaulting to " << DEFAULT_CONFIG_PATH << std::endl);
-		if (std::ifstream{ DEFAULT_CONFIG_PATH })
+		if (!std::ifstream{ DEFAULT_CONFIG_PATH })
 		{
 			VLOG_ERROR("[ERROR]: Dictionary::Dictionary: Could not open default path: " << DEFAULT_CONFIG_PATH << "." << std::endl);
 			throw std::runtime_error("Could not open the given configuration path nor the default configuration path");
 		}
-		boost::property_tree::ini_parser::read_ini(configFilePath, _iniPropertyTree);
+		boost::property_tree::ini_parser::read_ini(DEFAULT_CONFIG_PATH, _iniPropertyTree);
 	}
 
 	try

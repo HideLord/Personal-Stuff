@@ -44,6 +44,6 @@ private:
 #define VLOG_TRACE(message) ColorChanger::getInstance().changeColor(7);  std::cout << message;
 #define VLOG_DEBUG(message) ColorChanger::getInstance().changeColor(9);  std::cout << message;
 #define VLOG_INFO(message)  ColorChanger::getInstance().changeColor(10); std::cout << message;
-#define VLOG_WARN(message)  ColorChanger::getInstance().changeColor(6); std::cout << message;
+#define VLOG_WARN(message)  ColorChanger::getInstance().changeColor(14); std::cout << message;
 #define VLOG_ERROR(message) ColorChanger::getInstance().changeColor(12); std::cout << message;
 #define VLOG_FATAL(message) ColorChanger::getInstance().changeColor(4); std::cout << message;
